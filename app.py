@@ -75,7 +75,7 @@ def shopPut():  # новый магазин
     if req:
         print("ERROR shopPut", ID, f'Магазина {ID} уже существует')
         return json.dumps({'status': '208', 'error': f'Магазина {ID} уже существует'})
-    imagePath = "None"
+    imagePath = data.get("image", "NULL")
     # INSERT INTO имя_таблицы(названия_полей*) VALUES(значения)
     website = data.get("website", "NULL")
     pos = data.get("position", {"lat": NULL, "lng": NULL})
