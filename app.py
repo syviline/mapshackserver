@@ -40,20 +40,6 @@ def shopDel():  # удалить магазин по id
     return json.dumps({'status': '200'})
 
 
-@app.route('/api/mark/del', methods=['POST'])
-def markDel():  # удалить mark по id
-    data = json.loads(request.data.decode('utf-8'))
-    ID = data["id"]
-    req = _getMark(ID)
-    if not req:
-        return json.dumps({'status': '404', 'error': f'Марки {ID} не существует'})
-    # DELETE from films
-    # where year < 1985
-    req = db.session.execute(f"DELETE FROM marks WHERE id = '{ID}'")
-    db.session.commit()
-    return json.dumps({'status': '200'})
-
-
 @app.route('/api/shop/get', methods=['POST'])
 def shopGet():  # получить магазин по id
     data = json.loads(request.data.decode('utf-8'))
@@ -62,7 +48,7 @@ def shopGet():  # получить магазин по id
     req = _getShop(shopID)
     if not req:
         return json.dumps({'status': '404', 'error': f'Магазина {shopID} не существует'})
-    ID, name, descript, imagePath, website, lat, lng = req
+    ID, name, descript, imagePath, website, lat, lng, city = req
     req = db.session.execute(f"SELECT * FROM marks WHERE shopID = '{shopID}'").fetchall()
     marks = []
     for mark in req:
@@ -74,23 +60,8 @@ def shopGet():  # получить магазин по id
                 "image": imagePath,
                 "website": website,
                 "marks": marks,
-                "position": {"lat": lat, "lng": lng}}
-
-    return json.dumps(out_data)
-
-
-@app.route('/api/mark/get', methods=['POST'])
-def markGet():  # получить марку по id
-    data = json.loads(request.data.decode('utf-8'))
-    IDM = data["id"]
-    req = _getMark(IDM)
-    if not req:
-        return json.dumps({'status': '404', 'error': f'Марки {IDM} не существует'})
-    ID, name, descript, lat, lng, shopID = req
-    out_data = {'status': '200',
-                "id": ID, "name": name, "description": descript,
                 "position": {"lat": lat, "lng": lng},
-                "shopID": shopID}
+                "city": city}
 
     return json.dumps(out_data)
 
@@ -109,9 +80,9 @@ def shopPut():  # новый магазин
     website = data.get("website", "NULL")
     pos = data.get("position", {"lat": NULL, "lng": NULL})
     lat, lng = pos["lat"], pos["lng"]
-
+    city = data.get("city", NULL)
     req = db.session.execute(
-        f"INSERT INTO shops VALUES{(ID, data['name'], data['description'], imagePath, website, lat, lng)}")
+        f"INSERT INTO shops VALUES{(ID, data['name'], data['description'], imagePath, website, lat, lng, city)}")
     for mark in data.get("marks", []):
         IDM = mark.get("id")
         if _getMark(IDM):
@@ -126,6 +97,48 @@ def shopPut():  # новый магазин
     db.session.commit()
     print("shopPut", ID)
     return json.dumps({'status': '201'})
+
+
+@app.route('/api/shop/all', methods=['POST', 'GET'])
+def shopAll():  # все магазины
+    data = json.loads(request.data.decode('utf-8'))
+    city = data.get('city')
+    reqs = db.session.execute(f"SELECT * FROM shops {f'''WHERE city = '{city}' ''' if city else ''}").fetchall()
+    shops = []
+    for req in reqs:
+        ID, name, descript, imagePath, website, lat, lng, city = req
+        shops.append({"id": ID, "name": name, "description": descript, "website": website, 'city': city})
+    return json.dumps({'status': '200', 'shops': shops})
+
+
+@app.route('/api/mark/del', methods=['POST'])
+def markDel():  # удалить mark по id
+    data = json.loads(request.data.decode('utf-8'))
+    ID = data["id"]
+    req = _getMark(ID)
+    if not req:
+        return json.dumps({'status': '404', 'error': f'Марки {ID} не существует'})
+    # DELETE from films
+    # where year < 1985
+    req = db.session.execute(f"DELETE FROM marks WHERE id = '{ID}'")
+    db.session.commit()
+    return json.dumps({'status': '200'})
+
+
+@app.route('/api/mark/get', methods=['POST'])
+def markGet():  # получить марку по id
+    data = json.loads(request.data.decode('utf-8'))
+    IDM = data["id"]
+    req = _getMark(IDM)
+    if not req:
+        return json.dumps({'status': '404', 'error': f'Марки {IDM} не существует'})
+    ID, name, descript, lat, lng, shopID = req
+    out_data = {'status': '200',
+                "id": ID, "name": name, "description": descript,
+                "position": {"lat": lat, "lng": lng},
+                "shopID": shopID}
+
+    return json.dumps(out_data)
 
 
 @app.route('/api/shop/mark/put', methods=['POST'])
@@ -155,16 +168,6 @@ def markPut():  # новый марка для магазина
     return json.dumps({'status': '201'})
 
 
-@app.route('/api/shop/all', methods=['POST', 'GET'])
-def shopAll():  # все магазины
-    reqs = db.session.execute(f"SELECT * FROM shops").fetchall()
-    shops = []
-    for req in reqs:
-        ID, name, descript, imagePath, website, lat, lng = req
-        shops.append({"id": ID, "name": name, "description": descript, "website": website})
-    return json.dumps({'status': '200', 'shops': shops})
-
-
 @app.route('/api/shop/mark/all', methods=['POST', 'GET'])
 def markAll():  # все магазины
     data = json.loads(request.data.decode('utf-8'))
@@ -183,6 +186,14 @@ def markAll():  # все магазины
                       "position": {"lat": lat, "lng": lng}})
     print("getAllMarks", ID, marks, reqs)
     return json.dumps({'status': '200', 'marks': marks})
+
+
+@app.route('/api/city/all', methods=['POST', 'GET'])
+def cityAll():  # все города
+    reqs = db.session.execute(f"SELECT city FROM shops GROUP BY city").fetchall()
+    cities = [r[0] for r in reqs]
+    print(reqs)
+    return json.dumps({'status': '200', "cities": cities})
 
 
 if __name__ == '__main__':

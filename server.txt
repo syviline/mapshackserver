@@ -1,0 +1,69 @@
+﻿/shop
+get - нужен для получения информации о магазине.
+Входные: id магазина
+Выходные: вся инфа о магазине, примерно: {
+	id: string,
+	name: string,
+	description: string,
+	image(нужно подумать в каком виде),
+	marks: [{
+		name: string
+		description: string,
+		position: {
+			lat: float(дробное),
+			lng:  float(дробное)
+		}
+	}]
+}
+
+del - удаляет магазин по id.
+Входные: id: string
+Выходные: status: string
+
+put - Добавить метку магазина.
+Входные: {
+	id: string,
+	name: string,
+	description: string,
+	website: string,	
+	image(нужно подумать в каком виде),
+	marks: [{
+		name: string
+		description: string,
+		position: {
+			lat: float(дробное),
+			lng:  float(дробное)
+		}
+	}],
+	position: {
+		lat: float(дробное),
+		lng:  float(дробное)
+	}
+}
+Выходные: status
+
+/api/shops
+get - Получение всех магазинов которые есть.
+Входные: нет
+Выходные: [{
+	id: string
+	name: string, 
+	
+	position: {
+		lat: float(дробное),
+		lng:  float(дробное)
+	}
+}]
+
+/api/shop/mark/add
+{
+	shopID: string
+	markID: int
+	name: string, 
+	description: string,
+	position: {
+		lat: float(дробное),
+		lng:  float(дробное)}
+
+	
+}
