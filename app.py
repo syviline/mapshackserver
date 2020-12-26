@@ -107,7 +107,10 @@ def shopAll():  # все магазины
     shops = []
     for req in reqs:
         ID, name, descript, imagePath, website, lat, lng, city = req
-        shops.append({"id": ID, "name": name, "description": descript, "website": website, 'city': city})
+        shops.append({"id": ID, "name": name, 
+                      "description": descript, 
+                      "position": {"lat": lat, "lng": lng},
+                      "website": website, 'city': city})
     return json.dumps({'status': '200', 'shops': shops})
 
 
