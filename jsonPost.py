@@ -60,6 +60,10 @@ input()
 print(_shopAll, reqePost(URL, _shopAll), sep="\n")
 input()
 
+print(_shopGet, reqePost(URL, _shopGet, {"id": "9-9-9"}), sep="\n")
+input()
+
+
 print(_markAdd, addMark("9-9-6", "Полка", "Полка шеколадками2", 12.1, 46.34, "1-7"), sep="\n")
 input()
 print(_markAdd, addMark("9-9-6", "Полка", "Полка nuts", 12.2, 46.35, "1-8"), sep="\n")
