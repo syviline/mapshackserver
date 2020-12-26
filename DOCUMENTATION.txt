@@ -1,0 +1,108 @@
+URL = 'http://127.0.0.1:5000'
+URL = "https://mapshack.herokuapp.com/"
+
+is_none # не обезательный параметр по умалчанию NULL
+string / int # он выдает в зависемости как записано если и так что переводи в string 
+
+_cityAll = "/api/city/all"
+{}
+out:
+{'status': '200', "cities": cities} OK
+
+
+_shopAll = "/api/shop/all" #
+{"city": city string is_none}
+out:
+{'status': '200'} OK
+
+
+_shopAdd = "/api/shop/put"
+{"id": ID, string / int
+ "name": name, string
+ "description": descript, string is_none
+ "image": imagePath, is_none
+ "website": website, string is_none 
+ "position": {"lat": lat, "lng": lng}, is_none
+ "city": city, is_none
+ "marks": marks, is_none}
+out:
+{'status': '208', 'error': f'Магазина {ID} уже существует'}
+{'status': '209', 'error': f'Марка {IDM} уже существует', 'id': IDM}
+{'status': '201'} OK
+
+
+_shopGet = "/api/shop/get" #
+{id: shopID} string / int
+out:
+{'status': '404', 'error': f'Магазина {ID} не существует'}
+{'status': '200',
+ "id": ID, string / int
+ "name": name, string
+ "description": descript, string 
+ "image": imagePath, string 
+ "website": website, string 
+ "marks": [
+      {"id": ID, string / int
+       "name": name, string
+       "description": descript, string
+       "position": {"lat": lat, "lng": lng}, float
+       }], 
+ "position": {"lat": lat, "lng": lng}, float
+ "city": city, string}
+
+
+_shopDel = "/api/shop/del" #
+{id: shopID} string / int
+out:
+{'status': '404', 'error': f'Магазина {shopID} не существует'}
+{'status': '200'} OK 
+
+
+
+
+
+#=====================MARKS in shop======================================================
+# не задукоментировано полностью .....
+# и так что не лезь)
+
+_markAll = "/api/shop/mark/all"
+{id: shopID} string / int
+out:
+{'status': '404', 'error': f'Магазин {ID} не существует'}
+{'status': '200', 'marks': [
+     {"id": ID, string/int (надо переводить в стринг если это число)
+     "name": name, string
+     "description": descript, string
+     "position": {"lat": lat, float
+                  "lng": lng, float
+                  }}
+    ]}
+    
+
+_markAdd = "/api/shop/mark/put"
+out:
+{'status': '404', 'error': f'Магазин {ID} не существует'}
+{'status': '209', 'error': f'Марка {IDM} уже существует', 'id': IDM}
+{'status': '201'} OK
+
+
+_markGet = "/api/mark/get"
+{id: markID} string / int
+out:
+{'status': '404', 'error': f'Марки {IDM} не существует'}
+{'status': '200',  
+ "id": ID, string/int (надо переводить в стринг если это число)
+ "name": name, string
+ "description": descript, string
+ "position": {"lat": lat, float
+              "lng": lng, float
+              }
+    }
+
+
+_markDel = "/api/mark/del"
+{id: markID} string / int
+out:
+{'status': '404', 'error': f'Марки {IDM} не существует'}
+{'status': '200'} OK
+
