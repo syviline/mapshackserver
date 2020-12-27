@@ -103,7 +103,7 @@ def shopPut():  # новый магазин
 def shopAll():  # все магазины
     data = json.loads(request.data.decode('utf-8'))
     city = data.get('city')
-    reqs = db.session.execute(f"SELECT * FROM shops {f'''WHERE city = '{city}' ''' if city else ''}").fetchall()
+    reqs = db.session.execute(f"SELECT * FROM Shops {f'''WHERE city = '{city}' ''' if city else ''}").fetchall()
     shops = []
     for req in reqs:
         ID, name, descript, imagePath, website, lat, lng, city = req
